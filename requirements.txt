@@ -1,0 +1,4 @@
+redis>=3.3.11
+requests>=2.22.0
+selenium>=3.141.0
+Pillow>=7.0.0
