@@ -6,7 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 import time
 from PIL import Image
-import requests
 import random
 import logging
 
@@ -43,6 +42,7 @@ class Weibo(object):
         qrcodeImg = self.wait.until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="pl_login_form"]/div/div[2]/img')))
         time.sleep(20)
+        log.info("等待 20 s")
         while True:
             if qrcodeImg.location['x'] > 0 and qrcodeImg.size['width'] > 0:
                 break
@@ -73,6 +73,7 @@ class Weibo(object):
             success = False
             waitTimes = 0
 
+            log.info("等待扫码")
             while True:
                 waitTimes += 1
                 if self.isLogin():
@@ -83,7 +84,7 @@ class Weibo(object):
                 if waitTimes > 300:
                     log.info("扫码超时，重新获取二维码")
                     break
-                log.info("等待扫码" + '.' * waitTimes + '\r')
+                print("等待扫码" + '.' * waitTimes + '\r')
 
             if success:
                 break
