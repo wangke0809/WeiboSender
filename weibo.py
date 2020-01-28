@@ -11,10 +11,12 @@ import logging
 
 log = logging.getLogger("weibo")
 
+
 class Weibo(object):
 
     def __init__(self, driverPath, callBack=None):
         options = Options()
+        options.add_argument('--user-data-dir=weibo-data')
         options.add_argument('--headless')
         options.add_argument('--disable-gpu')
         options.add_argument('--no-sandbox')
@@ -22,6 +24,8 @@ class Weibo(object):
         self.browser.set_window_size(1366, 768)
         self.wait = WebDriverWait(self.browser, 30)
         self.callBack = callBack
+        self.browser.get("https://weibo.com/login.php")
+        time.sleep(5)
 
     def isLogin(self):
         try:
@@ -37,12 +41,13 @@ class Weibo(object):
         if self.isLogin():
             return
         self.browser.get("https://weibo.com/login.php")
-        qrcodeTab = self.browser.find_element_by_xpath('//*[@id="pl_login_form"]/div/div[1]/div/a[2]')
+        qrcodeTab = self.wait.until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="pl_login_form"]/div/div[1]/div/a[2]')))
         qrcodeTab.click()
         qrcodeImg = self.wait.until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="pl_login_form"]/div/div[2]/img')))
-        time.sleep(20)
         log.info("等待 20 s")
+        time.sleep(20)
         while True:
             if qrcodeImg.location['x'] > 0 and qrcodeImg.size['width'] > 0:
                 break
@@ -73,18 +78,17 @@ class Weibo(object):
             success = False
             waitTimes = 0
 
-            log.info("等待扫码")
             while True:
                 waitTimes += 1
                 if self.isLogin():
                     success = True
                     break
                 else:
-                    time.sleep(1)
-                if waitTimes > 300:
+                    time.sleep(5)
+                if waitTimes > 100:
                     log.info("扫码超时，重新获取二维码")
                     break
-                print("等待扫码" + '.' * waitTimes + '\r')
+                log.info("等待扫码" + '.' * waitTimes + '\r')
 
             if success:
                 break
@@ -94,6 +98,7 @@ class Weibo(object):
             self.login()
         content = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[2]/textarea')
         content.send_keys(text)
+        time.sleep(3)
         send = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[3]/div[1]/a')
         send.click()
         log.info("发送微博: " + text)
@@ -115,6 +120,7 @@ if __name__ == '__main__':
             s = bytes.fromhex(val).decode('gb2312')
             r += s
         return r
+
 
     w = Weibo('./chromedriver')
     while True:

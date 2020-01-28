@@ -25,7 +25,7 @@ def callback(path):
 
 
 def main():
-    queue = Message(config.Redis)
+    queue = Message(config.Redis, config.RedisKey)
     weibo = Weibo(config.ChromeDriver, callback)
     while True:
         try:
@@ -35,6 +35,7 @@ def main():
                 msg = msg.decode()
                 weibo.postWeibo(msg)
         except Exception:
+            queue.reAddMessage(msg)
             log.error("error: %s", traceback.format_exc())
         time.sleep(10)
 

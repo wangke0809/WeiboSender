@@ -3,9 +3,9 @@ import redis
 
 class Message(object):
 
-    def __init__(self, url):
+    def __init__(self, url, redisKey='WEIBOMESSAGEQUENE'):
         self.rds = redis.Redis.from_url(url)
-        self.key = 'WEIBOMESSAGEQUENE'
+        self.key = redisKey
 
     def addMessage(self, text):
         self.rds.lpush(self.key, text)
@@ -13,6 +13,9 @@ class Message(object):
     def getMessage(self):
         msg = self.rds.rpop(self.key)
         return msg
+
+    def reAddMessage(self, text):
+        self.rds.rpush(self.key, text)
 
 
 if __name__ == '__main__':
