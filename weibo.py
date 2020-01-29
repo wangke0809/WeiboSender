@@ -3,7 +3,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 import time
 from PIL import Image
 import random
@@ -94,14 +94,22 @@ class Weibo(object):
                 break
 
     def postWeibo(self, text):
-        if not self.isLogin():
-            self.login()
-        content = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[2]/textarea')
-        content.send_keys(text)
-        time.sleep(3)
-        send = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[3]/div[1]/a')
-        send.click()
-        log.info("发送微博: " + text)
+        while True:
+            if not self.isLogin():
+                self.login()
+            content = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[2]/textarea')
+            content.send_keys(text)
+            time.sleep(3)
+            try:
+                send = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[3]/div[1]/a')
+                send.click()
+            except ElementClickInterceptedException:
+                log.error("无法点击发送按钮，准备刷新")
+                self.browser.refresh()
+                time.sleep(3)
+                continue
+            log.info("发送微博: " + text)
+            break
 
     def close(self):
         self.browser.quit()
