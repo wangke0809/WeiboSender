@@ -98,6 +98,8 @@ class Weibo(object):
             if not self.isLogin():
                 self.login()
             content = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[2]/textarea')
+            content.clear()
+            time.sleep(0.1)
             content.send_keys(text)
             time.sleep(3)
             try:
@@ -115,7 +117,7 @@ class Weibo(object):
 
     def debug(self, prefix=''):
         fileName = './debug/%s_%d.png' % (prefix, int(time.time()))
-        log.error('save screenshot: %s' % fileName)
+        log.info('save screenshot: %s' % fileName)
         self.browser.save_screenshot(fileName)
 
     def close(self):
