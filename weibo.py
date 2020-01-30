@@ -114,7 +114,7 @@ class Weibo(object):
         self.debug('post')
 
     def debug(self, prefix=''):
-        fileName = '%s_%d.png' % (prefix, int(time.time()))
+        fileName = './debug/%s_%d.png' % (prefix, int(time.time()))
         log.error('save screenshot: %s' % fileName)
         self.browser.save_screenshot(fileName)
 
