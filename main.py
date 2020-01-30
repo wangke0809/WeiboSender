@@ -31,6 +31,9 @@ def main():
         try:
             msg = queue.getMessage()
             if msg is not None:
+                if msg == 'debug':
+                    weibo.debug("debug")
+                    continue
                 log.info("检测到消息，准备发送")
                 msg = msg.decode()
                 weibo.postWeibo(msg)
