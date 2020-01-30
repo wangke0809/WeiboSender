@@ -30,8 +30,8 @@ def main():
     while True:
         try:
             msg = queue.getMessage()
-            msg = msg.decode()
             if msg is not None:
+                msg = msg.decode()
                 if msg == 'debug':
                     weibo.debug("debug")
                     continue
