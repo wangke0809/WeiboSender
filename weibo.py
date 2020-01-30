@@ -104,13 +104,19 @@ class Weibo(object):
                 send = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[3]/div[1]/a')
                 send.click()
             except ElementClickInterceptedException:
+                self.debug('refresh')
                 log.error("无法点击发送按钮，准备刷新")
                 self.browser.refresh()
                 time.sleep(3)
                 continue
             log.info("发送微博: " + text)
             break
-        self.browser.save_screenshot("./debug/%d.png"%int(time.time()))
+        self.debug('post')
+
+    def debug(self, prefix=''):
+        fileName = '%s_%d.png' % (prefix, int(time.time()))
+        log.error('save screenshot: %s' % fileName)
+        self.browser.save_screenshot(fileName)
 
     def close(self):
         self.browser.quit()
