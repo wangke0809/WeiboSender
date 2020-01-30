@@ -110,6 +110,7 @@ class Weibo(object):
                 continue
             log.info("发送微博: " + text)
             break
+        self.browser.save_screenshot("./debug/%d.png"%int(time.time()))
 
     def close(self):
         self.browser.quit()
