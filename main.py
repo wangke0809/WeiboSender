@@ -39,7 +39,9 @@ def main():
                 weibo.postWeibo(msg)
         except Exception:
             queue.reAddMessage(msg)
+            weibo.debug("exception")
             log.error("error: %s", traceback.format_exc())
+            weibo.browser.refresh()
         time.sleep(10)
 
 

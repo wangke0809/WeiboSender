@@ -3,7 +3,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
+from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException, \
+    InvalidElementStateException
 import time
 from PIL import Image
 import random
@@ -97,17 +98,24 @@ class Weibo(object):
         while True:
             if not self.isLogin():
                 self.login()
-            content = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[2]/textarea')
-            content.clear()
-            time.sleep(0.1)
-            content.send_keys(text)
-            time.sleep(3)
             try:
+                content = self.browser.find_element_by_xpath(
+                    '//*[@id="v6_pl_content_publishertop"]/div/div[2]/textarea')
+                content.clear()
+                time.sleep(0.1)
+                content.send_keys(text)
+                time.sleep(3)
                 send = self.browser.find_element_by_xpath('//*[@id="v6_pl_content_publishertop"]/div/div[3]/div[1]/a')
                 send.click()
             except ElementClickInterceptedException:
                 self.debug('refresh')
                 log.error("无法点击发送按钮，准备刷新")
+                self.browser.refresh()
+                time.sleep(3)
+                continue
+            except InvalidElementStateException:
+                self.debug('refresh')
+                log.error("元素状态无效")
                 self.browser.refresh()
                 time.sleep(3)
                 continue
