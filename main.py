@@ -31,8 +31,7 @@ def main():
         try:
             msg = queue.getMessage()
             if msg is not None:
-                # ChromeDriver only supports characters in the BMP
-                msg = msg.decode().encode('gbk', errors='ignore').decode()
+                msg = msg.decode()
                 if msg == 'debug':
                     weibo.debug("debug")
                     continue

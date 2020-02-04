@@ -9,6 +9,7 @@ import time
 from PIL import Image
 import random
 import logging
+import re
 
 log = logging.getLogger("weibo")
 
@@ -94,7 +95,15 @@ class Weibo(object):
             if success:
                 break
 
+    def getMBPStr(self, text):
+        # ChromeDriver only supports characters in the BMP
+        r = re.sub(u'[\U00010000-\U0010ffff]', '', text)
+        return r
+
     def postWeibo(self, text):
+        text = self.getMBPStr(text)
+        if text == '':
+            return
         while True:
             if not self.isLogin():
                 self.login()
