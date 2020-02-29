@@ -1,14 +1,18 @@
+
+# Redis 配置
 # 'redis://:password@host:6379/0'
 Redis = 'redis://:xx@xx:6379/0'
 
+# 浏览器驱动路径
 ChromeDriver = './chromedriver'
 
-# token
+# 钉钉机器人 token
 DingTalkWebHookToken = 'xx'
-# None or 手机号
+# 推送消息需要@的人 None or 手机号
 DingTalkWebHookAtPhone = None
 
 # 服务器域名/ip http://host:port/weibo
+# 用于显示二维码
 Url = 'http://xxx/weibo'
 
 LoggerJsonConfig = '''{

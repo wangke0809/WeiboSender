@@ -16,12 +16,13 @@ log = logging.getLogger("weibo")
 
 class Weibo(object):
 
-    def __init__(self, driverPath, callBack=None):
+    def __init__(self, driverPath, callBack=None, hidden=True, dataDir='weibo-data'):
         options = Options()
-        options.add_argument('--user-data-dir=weibo-data')
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
+        options.add_argument('--user-data-dir=' + dataDir)
+        if hidden:
+            options.add_argument('--headless')
+            options.add_argument('--disable-gpu')
+            options.add_argument('--no-sandbox')
         self.browser = webdriver.Chrome(options=options, executable_path=driverPath)
         self.browser.set_window_size(1366, 768)
         self.wait = WebDriverWait(self.browser, 30)
@@ -156,7 +157,7 @@ if __name__ == '__main__':
         return r
 
 
-    w = Weibo('./chromedriver')
+    w = Weibo('./chromedriver', hidden=False)
     while True:
         w.postWeibo("认识几个字？" + randomStr(random.randrange(1, 6)))
         t = 1000 + random.randrange(100, 800)
